@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :exercie do
+  factory :exercise do
     name { Faker::StarWars.character }
     workout_id nil
   end

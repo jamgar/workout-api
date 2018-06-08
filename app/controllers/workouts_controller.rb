@@ -6,13 +6,13 @@ class WorkoutsController < ApplicationController
     json_response(@workouts)
   end
 
+  def show
+    json_response(@workout)
+  end
+
   def create
     @workout = Workout.create!(workout_params) # Note: use create! so model can throw exception
     json_response(@workout, :created)
-  end
-
-  def show
-    json_response(@workout)
   end
 
   def update
