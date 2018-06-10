@@ -1,7 +1,6 @@
 class JsonWebToken
-  # HMAC_SECRET = Rails.application.secrets.secret_key_base
-  #??? secret_key_base= no secrets.yml in 5.2
-  HMAC_SECRET = '15e0cb8f5758656ff750129c'
+  HMAC_SECRET = WorkoutApi::Application.credentials.secret_key_base
+
 
   def self.encode(payload, exp = 24.hours.from_now)
     payload[:exp] = exp.to_i
