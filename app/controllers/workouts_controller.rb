@@ -2,7 +2,7 @@ class WorkoutsController < ApplicationController
   before_action :set_workout, only: [:show, :update, :destroy]
 
   def index
-    @workouts = Workout.all
+    @workouts = current_user.workouts
     json_response(@workouts)
   end
 
@@ -11,7 +11,7 @@ class WorkoutsController < ApplicationController
   end
 
   def create
-    @workout = Workout.create!(workout_params) # Note: use create! so model can throw exception
+    @workout = current_user.workouts.create!(workout_params) # Note: use create! so model can throw exception
     json_response(@workout, :created)
   end
 
@@ -28,7 +28,7 @@ class WorkoutsController < ApplicationController
   private
 
     def workout_params
-      params.permit(:title, :created_by)
+      params.permit(:title)
     end
 
     def set_workout

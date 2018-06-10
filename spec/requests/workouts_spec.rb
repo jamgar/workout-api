@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe 'Workout API', type: :request do
-  let!(:workouts) { create_list(:workout, 10) }
+  let(:user) { create(:user) }
+  let!(:workouts) { create_list(:workout, 10, created_by: user.id) }
   let(:workout_id) { workouts.first.id }
+  let(:headers) { valid_headers }
 
   describe 'GET /workouts' do
-    before { get '/workouts' }
+    before { get '/workouts', params: {}, headers: headers }
 
     it 'returns workouts' do
       expect(json).not_to be_empty
@@ -18,7 +20,7 @@ RSpec.describe 'Workout API', type: :request do
   end
 
   describe 'GET /workouts/:id' do
-    before { get "/workouts/#{workout_id}" }
+    before { get "/workouts/#{workout_id}", params: {}, headers: headers }
 
     context 'when the record exist' do
       it 'returns the workout' do
@@ -45,10 +47,12 @@ RSpec.describe 'Workout API', type: :request do
   end
 
   describe 'POST /workouts' do
-    let(:valid_attributes) { { title: 'Run Intervals', created_by: '1' } }
+    let(:valid_attributes) do
+      { title: 'Run Intervals', created_by: user.id.to_s }.to_json
+    end
 
     context 'when the request is valid' do
-      before { post '/workouts', params: valid_attributes }
+      before { post '/workouts', params: valid_attributes, headers: headers }
 
       it 'creates a workout' do
         expect(json['title']).to eq('Run Intervals')
@@ -60,7 +64,8 @@ RSpec.describe 'Workout API', type: :request do
     end
 
     context 'when the request is invalid title' do
-      before { post '/workouts', params: { created_by: '1' } }
+      let(:invalid_attributes) { { title: nil, created_by: user.id.to_s }.to_json }
+      before { post '/workouts', params: invalid_attributes, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -70,25 +75,13 @@ RSpec.describe 'Workout API', type: :request do
         expect(response.body).to match(/Validation failed: Title can't be blank/)
       end
     end
-
-    context 'when the request is invalid created by' do
-      before { post '/workouts', params: { title: 'weights' } }
-
-      it 'returns status code 422' do
-        expect(response).to have_http_status(422)
-      end
-
-      it 'returns a validation failure message' do
-        expect(response.body).to match(/Validation failed: Created by can't be blank/)
-      end
-    end
   end
 
   describe 'PUT /workouts/:id' do
-    let(:valid_attributes) { { title: 'Swim' } }
+    let(:valid_attributes) { { title: 'Swim' }.to_json }
 
     context 'when the record exist' do
-      before { put "/workouts/#{workout_id}", params: valid_attributes }
+      before { put "/workouts/#{workout_id}", params: valid_attributes, headers: headers }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -101,7 +94,7 @@ RSpec.describe 'Workout API', type: :request do
   end
 
   describe 'DELETE /workouts/:id' do
-    before { delete "/workouts/#{workout_id}" }
+    before { delete "/workouts/#{workout_id}", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
