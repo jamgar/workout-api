@@ -3,7 +3,7 @@ module V1
     before_action :set_workout, only: [:show, :update, :destroy]
 
     def index
-      @workouts = current_user.workouts
+      @workouts = current_user.workouts.paginate(page: params[:page], per_page: 20)
       json_response(@workouts)
     end
 
