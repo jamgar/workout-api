@@ -29,7 +29,7 @@ module V1
     private
 
       def workout_params
-        params.permit(:title)
+        params.permit(:title, :created_by, :workout_date, :note, exercises_attributes: [ :id, :name ])
       end
 
       def set_workout
