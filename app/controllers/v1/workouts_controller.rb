@@ -30,7 +30,6 @@ module V1
 
       def workout_params
         params.require(:workout).permit(:title, :workout_date, :note, :user_id, exercises_attributes: [ :id, :name, :_destroy ])
-        # params.permit(:title, :workout_date, :note, :user_id, exercises_attributes: [ :id, :name, :_destroy ])
       end
 
       def set_workout
