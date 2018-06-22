@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_20_124651) do
+ActiveRecord::Schema.define(version: 2018_06_22_153642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,11 +33,11 @@ ActiveRecord::Schema.define(version: 2018_06_20_124651) do
 
   create_table "workouts", force: :cascade do |t|
     t.string "title"
-    t.string "created_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "workout_date"
     t.text "note"
+    t.integer "user_id"
+    t.bigint "workout_date"
   end
 
   add_foreign_key "exercises", "workouts"
